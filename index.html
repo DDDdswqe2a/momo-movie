@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>나의 수호신을 찾아라 | 모모와 다락방의 수상한 요괴들</title>
+<meta name="description" content="이와, 카와, 마메 중 당신을 지켜주는 수호신은 누구일까요? 다락방 속 오래된 책의 봉인을 풀고 확인해보세요.">
+
+<!-- OG (공유 미리보기) -->
+<meta property="og:title" content="나의 수호신을 찾아라 | 모모와 다락방의 수상한 요괴들">
+<meta property="og:description" content="이와, 카와, 마메 중 당신을 지켜주는 수호신은 누구일까요?">
+<meta property="og:type" content="website">
+<meta id="ogImage" property="og:image" content="">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   0. 이미지 호스팅 안내
+   ---------------------------------------------------------
+   아래 IMAGES 객체(스크립트 하단)에 실제 호스팅된 이미지 URL을
+   넣어주세요. 지금은 자리표시(placeholder)로 비워둔 상태이며,
+   placeholder 표시용 더미 아트만 CSS로 그려서 보여줍니다.
+   ========================================================= */
+
+:root{
+  /* ---- color tokens (다락방 속 오래된 책 톤) ---- */
+  --paper:        #F2E9D8;
+  --paper-deep:    #E9DCC0;
+  --ink:          #3A3531;
+  --ink-soft:     #6B6258;
+  --gold-line:    #C9B07F;
+  --gold-line-soft: #DDD0AC;
+
+  --iwa:          #5E8C89;   /* 이와: 묵직한 청록 */
+  --iwa-deep:     #3F6663;
+  --iwa-soft:     #DCEAE8;
+
+  --kawa:         #97A23E;   /* 카와: 올리브 그린 */
+  --kawa-deep:    #6E7A26;
+  --kawa-soft:    #EAEDD3;
+
+  --mame:         #C9786A;   /* 마메: 흙빛 핑크 */
+  --mame-deep:    #A85547;
+  --mame-soft:    #F3E0D9;
+
+  --shadow-soft: 0 8px 24px rgba(58,53,49,0.12);
+  --shadow-deep: 0 16px 48px rgba(58,53,49,0.22);
+
+  --font-display: 'Gaegu', sans-serif;
+  --font-body: 'Noto Sans KR', sans-serif;
+}
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body{
+  margin:0; padding:0;
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--ink);
+  overscroll-behavior:none;
+}
+body{
+  min-height:100vh;
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(255,255,255,0.5), transparent 50%),
+    radial-gradient(ellipse at 90% 100%, rgba(0,0,0,0.04), transparent 60%);
+}
+
+button{ font-family:inherit; border:none; background:none; cursor:pointer; }
+img{ max-width:100%; display:block; }
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+}
+
+/* ---------------- App shell ---------------- */
+#app{
+  max-width:480px;
+  margin:0 auto;
+  min-height:100vh;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+.paper-texture{
+  position:absolute; inset:0;
+  pointer-events:none;
+  opacity:0.5;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(58,53,49,0.015) 0px, transparent 1px, transparent 2px),
+    repeating-linear-gradient(90deg, rgba(58,53,49,0.012) 0px, transparent 1px, transparent 2px);
+  z-index:0;
+}
+
+.screen{
+  position:relative;
+  z-index:1;
+  flex:1;
+  display:none;
+  flex-direction:column;
+  min-height:100vh;
+  padding:0 24px;
+}
+.screen.active{ display:flex; }
+
+/* fade/scale transition between screens */
+.screen-enter{ animation:screenIn 0.5s ease both; }
+@keyframes screenIn{
+  from{ opacity:0; transform:translateY(14px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+/* ---------------- Top brand bar ---------------- */
+.brand-bar{
+  display:flex; align-items:center; justify-content:center;
+  gap:8px;
+  padding:18px 0 6px;
+  font-family:var(--font-display);
+  font-size:14px;
+  color:var(--ink-soft);
+  letter-spacing:0.02em;
+}
+.brand-bar .dot{ width:4px; height:4px; border-radius:50%; background:var(--gold-line); }
+
+/* ================= INTRO ================= */
+#screen-intro{ justify-content:flex-start; padding-top:8px; padding-bottom:40px; }
+
+.intro-art{
+  position:relative;
+  width:100%;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:6px;
+  box-shadow: var(--shadow-soft);
+  aspect-ratio: 4/5;
+  background: linear-gradient(160deg, var(--iwa-soft), var(--paper-deep) 70%);
+}
+.intro-art img{ width:100%; height:100%; object-fit:cover; }
+.intro-art .ph{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:6px;
+  color:var(--ink-soft); font-size:13px; text-align:center; padding:20px;
+}
+.intro-art .ph .ph-icon{ font-size:40px; opacity:0.5; }
+
+.intro-art::after{
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, transparent 55%, rgba(58,53,49,0.55) 100%);
+}
+.intro-badge{
+  position:absolute; top:14px; left:14px;
+  background:rgba(242,233,216,0.92);
+  color:var(--ink);
+  font-family:var(--font-display);
+  font-size:13px;
+  padding:6px 14px;
+  border-radius:999px;
+  z-index:2;
+  box-shadow:0 2px 8px rgba(0,0,0,0.12);
+}
+.intro-caption{
+  position:absolute; bottom:16px; left:16px; right:16px;
+  z-index:2; color:#fff;
+}
+.intro-caption .movie-name{ font-size:13px; opacity:0.85; margin-bottom:2px; }
+.intro-caption .movie-name b{ font-weight:700; }
+
+.intro-title{
+  font-family:var(--font-display);
+  font-size:34px;
+  line-height:1.28;
+  margin:26px 0 10px;
+  color:var(--ink);
+}
+.intro-title .accent{
+  color:var(--mame-deep);
+  position:relative;
+  white-space:nowrap;
+}
+.intro-title .accent::after{
+  content:'';
+  position:absolute; left:-2px; right:-2px; bottom:2px; height:8px;
+  background:rgba(201,120,106,0.25);
+  z-index:-1;
+  border-radius:4px;
+}
+
+.intro-desc{
+  font-size:15px;
+  line-height:1.65;
+  color:var(--ink-soft);
+  margin:0 0 22px;
+}
+
+.guardian-trio-preview{
+  display:flex;
+  gap:10px;
+  margin-bottom:26px;
+}
+.trio-chip{
+  flex:1;
+  background:#fff;
+  border-radius:14px;
+  padding:10px 8px 12px;
+  text-align:center;
+  box-shadow:var(--shadow-soft);
+  border:1px solid var(--gold-line-soft);
+}
+.trio-chip .chip-avatar{
+  width:100%;
+  aspect-ratio:1;
+  border-radius:10px;
+  margin-bottom:6px;
+  overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px;
+}
+.trio-chip.iwa .chip-avatar{ background:var(--iwa-soft); }
+.trio-chip.kawa .chip-avatar{ background:var(--kawa-soft); }
+.trio-chip.mame .chip-avatar{ background:var(--mame-soft); }
+.trio-chip .chip-avatar img{ width:100%; height:100%; object-fit:cover; }
+.trio-chip .chip-name{ font-family:var(--font-display); font-size:14px; }
+.trio-chip.iwa .chip-name{ color:var(--iwa-deep); }
+.trio-chip.kawa .chip-name{ color:var(--kawa-deep); }
+.trio-chip.mame .chip-name{ color:var(--mame-deep); }
+
+.count-strip{
+  display:flex; align-items:center; gap:8px;
+  font-size:13px; color:var(--ink-soft);
+  margin-bottom:22px;
+}
+.count-strip .num{ color:var(--mame-deep); font-weight:700; }
+.count-strip .avatars{ display:flex; }
+.count-strip .avatars span{
+  width:20px; height:20px; border-radius:50%;
+  background:var(--gold-line-soft);
+  border:2px solid var(--paper);
+  margin-left:-6px;
+  display:inline-block;
+}
+.count-strip .avatars span:first-child{ margin-left:0; }
+
+.cta-primary{
+  width:100%;
+  padding:18px 0;
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--font-display);
+  font-size:19px;
+  border-radius:16px;
+  box-shadow:var(--shadow-soft);
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:transform 0.15s ease, box-shadow 0.15s ease;
+  margin-bottom:14px;
+}
+.cta-primary:active{ transform:scale(0.97); }
+.cta-primary .arrow{ transition:transform 0.2s ease; }
+.cta-primary:hover .arrow{ transform:translateX(4px); }
+
+.intro-foot-note{
+  text-align:center;
+  font-size:12px;
+  color:var(--ink-soft);
+  opacity:0.7;
+  margin-top:auto;
+  padding-top:10px;
+}
+
+/* ================= QUESTION ================= */
+#screen-quiz{ padding-top:0; padding-bottom:28px; }
+
+.quiz-progress-wrap{
+  padding:16px 0 14px;
+  display:flex; align-items:center; gap:10px;
+}
+.quiz-progress-track{
+  flex:1; height:6px; background:var(--paper-deep);
+  border-radius:999px; overflow:hidden;
+}
+.quiz-progress-fill{
+  height:100%; border-radius:999px;
+  background:linear-gradient(90deg, var(--mame), var(--mame-deep));
+  transition:width 0.4s ease;
+  width:0%;
+}
+.quiz-progress-label{
+  font-family:var(--font-display);
+  font-size:13px; color:var(--ink-soft);
+  white-space:nowrap;
+}
+
+.quiz-stillcut{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/10;
+  border-radius:18px;
+  overflow:hidden;
+  margin-bottom:18px;
+  background:linear-gradient(160deg, var(--paper-deep), #ded0ab);
+  box-shadow:var(--shadow-soft);
+}
+.quiz-stillcut img{ width:100%; height:100%; object-fit:cover; }
+.quiz-stillcut .ph{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--ink-soft); font-size:13px;
+}
+.quiz-stillcut .scene-tag{
+  position:absolute; left:12px; bottom:12px;
+  background:rgba(58,53,49,0.72);
+  color:#fff; font-size:11.5px;
+  padding:5px 10px; border-radius:999px;
+}
+
+.quiz-question{
+  font-family:var(--font-display);
+  font-size:23px;
+  line-height:1.45;
+  margin:0 0 18px;
+  color:var(--ink);
+}
+
+.quiz-options{
+  display:flex; flex-direction:column; gap:10px;
+}
+.quiz-option{
+  display:flex; align-items:center; gap:12px;
+  text-align:left;
+  width:100%;
+  padding:16px 16px;
+  background:#fff;
+  border:1.5px solid var(--gold-line-soft);
+  border-radius:14px;
+  font-size:15px;
+  color:var(--ink);
+  line-height:1.5;
+  transition:border-color 0.15s ease, transform 0.1s ease, background 0.15s ease;
+}
+.quiz-option:active{ transform:scale(0.985); }
+.quiz-option:hover{ border-color:var(--mame); background:var(--mame-soft); }
+.quiz-option .opt-mark{
+  flex-shrink:0;
+  width:26px; height:26px; border-radius:50%;
+  border:1.5px solid var(--gold-line);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-size:13px;
+  color:var(--ink-soft);
+}
+
+.quiz-back{
+  margin-top:18px;
+  text-align:center;
+  font-size:13px;
+  color:var(--ink-soft);
+  text-decoration:underline;
+  text-decoration-color:var(--gold-line);
+  align-self:center;
+}
+
+/* ================= LOADING / BOOK UNLOCK ================= */
+#screen-book{
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding-bottom:40px;
+}
+.book-lead{
+  font-family:var(--font-display);
+  font-size:18px;
+  color:var(--ink-soft);
+  margin-bottom:26px;
+  min-height:50px;
+}
+.book-lead .blink{ animation:blinkDots 1.4s infinite; }
+@keyframes blinkDots{ 0%,100%{opacity:0.3;} 50%{opacity:1;} }
+
+.book-wrap{
+  position:relative;
+  width:230px;
+  height:230px;
+  margin:0 auto 30px;
+  perspective:1200px;
+}
+.book-glow{
+  position:absolute; inset:-30px;
+  background:radial-gradient(circle, rgba(201,176,127,0.45), transparent 65%);
+  border-radius:50%;
+  opacity:0;
+  z-index:1;
+  transition:opacity 0.6s ease;
+  pointer-events:none;
+}
+.book-glow.show{ opacity:1; animation:glowPulse 1.8s ease-in-out infinite; }
+@keyframes glowPulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.12); } }
+
+.book-cover{
+  position:absolute; inset:0;
+  z-index:3;
+  border-radius:8px;
+  background:linear-gradient(160deg, #C8A45E, #9c7a3b 60%, #7d602c);
+  box-shadow:var(--shadow-deep);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  transform-origin:left center;
+  transition:transform 0.9s cubic-bezier(0.5,0,0.2,1), opacity 0.9s ease;
+  overflow:hidden;
+  border:3px solid #6e521f;
+}
+.book-cover img{
+  width:100%; height:100%; object-fit:cover;
+  position:absolute; inset:0;
+}
+.book-cover .ph{
+  color:#f3e7c9; font-family:var(--font-display); font-size:15px;
+  padding:20px; text-align:center;
+}
+.book-cover .cover-shine{
+  position:absolute; inset:0;
+  background:linear-gradient(120deg, rgba(255,255,255,0.18) 0%, transparent 35%);
+}
+.book-cover.opened{
+  transform:rotateY(-150deg);
+  opacity:0;
+  pointer-events:none;
+}
+
+.book-pages{
+  position:absolute; inset:6px;
+  z-index:2;
+  border-radius:6px;
+  background:#f6efd9;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,0.06);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.5s ease 0.5s;
+}
+.book-pages.show{ opacity:1; }
+.book-pages .reveal-img{
+  width:88%; height:88%; object-fit:contain;
+  opacity:0;
+  transform:scale(0.85);
+  transition:opacity 0.6s ease 0.7s, transform 0.6s ease 0.7s;
+}
+.book-pages.show .reveal-img{ opacity:1; transform:scale(1); }
+.book-pages .ph{
+  color:var(--ink-soft); font-size:13px; padding:16px; text-align:center;
+  opacity:0; transition:opacity 0.6s ease 0.7s;
+}
+.book-pages.show .ph{ opacity:1; }
+
+.book-hint{
+  font-family:var(--font-display);
+  font-size:15px;
+  color:var(--ink);
+  background:#fff;
+  border:1.5px dashed var(--gold-line);
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 18px;
+  border-radius:999px;
+  cursor:pointer;
+  animation:hintBob 1.6s ease-in-out infinite;
+}
+@keyframes hintBob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-5px); } }
+.book-hint.hide{ display:none; }
+
+/* ================= RESULT ================= */
+#screen-result{ padding-bottom:46px; padding-top:6px; }
+
+.result-card{
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:var(--shadow-deep);
+  margin-bottom:20px;
+}
+.result-hero{
+  position:relative;
+  width:100%;
+  aspect-ratio:1/1;
+  display:flex; align-items:flex-end;
+}
+.result-hero img{ width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+.result-hero .ph{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  color:rgba(255,255,255,0.85); font-size:13px;
+}
+.result-hero-grad{
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.55) 100%);
+}
+.result-hero-text{
+  position:relative; z-index:2;
+  padding:18px 20px;
+  color:#fff;
+}
+.result-eyebrow{
+  font-size:13px;
+  opacity:0.85;
+  margin-bottom:4px;
+}
+.result-name{
+  font-family:var(--font-display);
+  font-size:36px;
+  line-height:1.1;
+}
+
+.result-body{
+  background:#fff;
+  padding:22px 20px 26px;
+}
+.result-tagline{
+  font-family:var(--font-display);
+  font-size:19px;
+  line-height:1.5;
+  margin:0 0 14px;
+}
+.result-desc{
+  font-size:14.5px;
+  line-height:1.75;
+  color:var(--ink-soft);
+  margin:0 0 22px;
+}
+
+.protect-title{
+  font-family:var(--font-display);
+  font-size:16px;
+  margin:0 0 12px;
+  display:flex; align-items:center; gap:6px;
+}
+.protect-list{ display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+.protect-item{
+  display:flex; gap:10px;
+  background:var(--paper);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:13.5px;
+  line-height:1.6;
+  color:var(--ink);
+}
+.protect-item .pi-icon{ font-size:18px; flex-shrink:0; line-height:1.4; }
+
+.movie-line-box{
+  border-left:3px solid var(--gold-line);
+  padding:4px 0 4px 14px;
+  margin-bottom:22px;
+}
+.movie-line-label{ font-size:12px; color:var(--ink-soft); margin-bottom:4px; }
+.movie-line-text{ font-size:14.5px; line-height:1.6; font-style:italic; color:var(--ink); }
+
+.chemistry-row{
+  display:flex; gap:8px; margin-bottom:24px;
+}
+.chem-chip{
+  flex:1;
+  border-radius:12px;
+  padding:10px 8px;
+  text-align:center;
+  font-size:11.5px;
+  line-height:1.5;
+  color:var(--ink-soft);
+}
+.chem-chip b{ display:block; font-family:var(--font-display); font-size:13px; color:var(--ink); margin-bottom:3px; }
+
+.result-actions{ display:flex; flex-direction:column; gap:10px; }
+.btn-share{
+  width:100%; padding:16px 0;
+  background:var(--ink); color:var(--paper);
+  font-family:var(--font-display); font-size:16px;
+  border-radius:14px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn-retry{
+  width:100%; padding:14px 0;
+  background:transparent; color:var(--ink-soft);
+  font-size:14px;
+  border:1.5px solid var(--gold-line-soft);
+  border-radius:14px;
+}
+.btn-cta-movie{
+  width:100%; padding:16px 0;
+  border-radius:14px;
+  font-family:var(--font-display); font-size:16px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  color:#fff;
+}
+
+/* ---------- entry form ---------- */
+.entry-section{
+  margin-top:26px;
+  background:#fff;
+  border-radius:20px;
+  padding:20px;
+  box-shadow:var(--shadow-soft);
+}
+.entry-title{
+  font-family:var(--font-display);
+  font-size:17px;
+  margin:0 0 6px;
+}
+.entry-sub{
+  font-size:13px;
+  color:var(--ink-soft);
+  margin:0 0 16px;
+  line-height:1.6;
+}
+.entry-field{ margin-bottom:12px; }
+.entry-field label{
+  display:block; font-size:12.5px; color:var(--ink-soft); margin-bottom:6px;
+}
+.entry-field input{
+  width:100%;
+  padding:13px 14px;
+  border:1.5px solid var(--gold-line-soft);
+  border-radius:10px;
+  font-size:14.5px;
+  font-family:inherit;
+  color:var(--ink);
+  background:var(--paper);
+}
+.entry-field input:focus{
+  outline:none;
+  border-color:var(--mame);
+}
+.entry-consent{
+  display:flex; align-items:flex-start; gap:8px;
+  font-size:12px; color:var(--ink-soft);
+  margin:14px 0 16px;
+  line-height:1.6;
+}
+.entry-consent input{ margin-top:3px; flex-shrink:0; }
+.btn-entry-submit{
+  width:100%; padding:15px 0;
+  background:var(--mame-deep); color:#fff;
+  font-family:var(--font-display); font-size:15.5px;
+  border-radius:12px;
+}
+.entry-success{
+  text-align:center;
+  padding:20px 0;
+  display:none;
+}
+.entry-success.show{ display:block; }
+.entry-success .es-icon{ font-size:34px; margin-bottom:10px; }
+.entry-success .es-text{ font-size:14px; color:var(--ink-soft); line-height:1.6; }
+.entry-form.hide{ display:none; }
+
+.share-toast{
+  position:fixed;
+  bottom:24px; left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:var(--ink); color:var(--paper);
+  font-size:13.5px;
+  padding:12px 20px;
+  border-radius:999px;
+  opacity:0;
+  transition:opacity 0.25s ease, transform 0.25s ease;
+  z-index:999;
+  pointer-events:none;
+  white-space:nowrap;
+}
+.share-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+.footer-note{
+  text-align:center;
+  font-size:11.5px;
+  color:var(--ink-soft);
+  opacity:0.6;
+  margin-top:22px;
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="paper-texture"></div>
+
+  <!-- ===================== 1. INTRO ===================== -->
+  <section id="screen-intro" class="screen active">
+    <div class="brand-bar"><span>다락방 오래된 책 속으로</span><span class="dot"></span><span>모모와 다락방의 수상한 요괴들</span></div>
+
+    <div class="intro-art">
+      <img id="img-intro-hero" src="" alt="모모와 다락방의 수상한 요괴들" style="display:none;">
+      <div class="ph" id="ph-intro-hero"><span class="ph-icon">📖</span>영화 메인 비주얼 / 키아트<br>(intro_hero)</div>
+      <div class="intro-badge">시오지마 다락방 보고서</div>
+      <div class="intro-caption">
+        <div class="movie-name">애니메이션 <b>모모와 다락방의 수상한 요괴들</b></div>
+      </div>
+    </div>
+
+    <h1 class="intro-title">당신 곁에도<br><span class="accent">수호신</span>이 있다면?</h1>
+    <p class="intro-desc">
+      엄마를 따라 작은 섬으로 이사 온 모모는 다락방에서 낡고 오래된 책 한 권을 발견하고, 그 안에 봉인되어 있던 요괴 삼인방 — 이와, 카와, 마메를 깨우고 말았어요.
+      덩치는 크지만 든든한 이와, 투덜대지만 결국 다 챙겨주는 카와, 사고는 치지만 누구보다 순수한 마메.
+      8개의 질문에 답하면, 당신의 책 속에 잠들어 있던 수호신이 모습을 드러낼 거예요.
+    </p>
+
+    <div class="guardian-trio-preview">
+      <div class="trio-chip iwa">
+        <div class="chip-avatar"><img id="img-chip-iwa" src="" alt="이와" style="display:none;"><span class="chip-ph">🪨</span></div>
+        <div class="chip-name">이와</div>
+      </div>
+      <div class="trio-chip kawa">
+        <div class="chip-avatar"><img id="img-chip-kawa" src="" alt="카와" style="display:none;"><span class="chip-ph">🍃</span></div>
+        <div class="chip-name">카와</div>
+      </div>
+      <div class="trio-chip mame">
+        <div class="chip-avatar"><img id="img-chip-mame" src="" alt="마메" style="display:none;"><span class="chip-ph">🌰</span></div>
+        <div class="chip-name">마메</div>
+      </div>
+    </div>
+
+    <div class="count-strip">
+      <span class="avatars"><span></span><span></span><span></span></span>
+      이미 <span class="num" id="participant-count">12,847</span>명이 자신의 수호신을 만났어요
+    </div>
+
+    <button class="cta-primary" id="btn-start">
+      오래된 책 펼치고 테스트 시작하기 <span class="arrow">→</span>
+    </button>
+    <p class="intro-foot-note">약 1분 · 결과는 저장되지 않아요</p>
+  </section>
+
+  <!-- ===================== 2. QUIZ ===================== -->
+  <section id="screen-quiz" class="screen">
+    <div class="quiz-progress-wrap">
+      <div class="quiz-progress-track"><div class="quiz-progress-fill" id="progress-fill"></div></div>
+      <div class="quiz-progress-label" id="progress-label">1 / 8</div>
+    </div>
+
+    <div class="quiz-stillcut" id="quiz-stillcut-wrap" style="display:none;">
+      <img id="quiz-stillcut-img" src="" alt="" style="display:none;">
+      <div class="ph" id="quiz-stillcut-ph">영화 스틸컷</div>
+      <div class="scene-tag" id="quiz-scene-tag"></div>
+    </div>
+
+    <h2 class="quiz-question" id="quiz-question-text"></h2>
+    <div class="quiz-options" id="quiz-options"></div>
+
+    <button class="quiz-back" id="btn-quiz-back" style="display:none;">← 이전 질문으로</button>
+  </section>
+
+  <!-- ===================== 3. BOOK UNLOCK (loading + reveal) ===================== -->
+  <section id="screen-book" class="screen">
+    <div class="brand-bar"><span>봉인의 오래된 책</span></div>
+    <p class="book-lead" id="book-lead-text">다락방 속 오래된 책이 천천히 깨어나고 있어요<span class="blink">...</span></p>
+
+    <div class="book-wrap">
+      <div class="book-glow" id="book-glow"></div>
+      <button class="book-cover" id="book-cover">
+        <img id="img-book-cover" src="" alt="화물 어용심 오래된 책" style="display:none;">
+        <div class="ph" id="ph-book-cover">요괴가 그려진<br>봉인된 오래된 책<br><span style="opacity:.6;font-size:12px;">(book_cover)</span></div>
+        <div class="cover-shine"></div>
+      </button>
+      <div class="book-pages" id="book-pages">
+        <img class="reveal-img" id="img-result-reveal" src="" alt="" style="display:none;">
+        <div class="ph" id="ph-result-reveal"></div>
+      </div>
+    </div>
+
+    <div class="book-hint" id="book-hint">👆 오래된 요괴 책을 눌러 봉인을 풀어보세요</div>
+  </section>
+
+  <!-- ===================== 4. RESULT ===================== -->
+  <section id="screen-result" class="screen">
+    <div class="brand-bar"><span>당신의 수호신이 도착했어요</span></div>
+
+    <div class="result-card">
+      <div class="result-hero" id="result-hero">
+        <img id="img-result-hero" src="" alt="" style="display:none;">
+        <div class="ph" id="ph-result-hero"></div>
+        <div class="result-hero-grad"></div>
+        <div class="result-hero-text">
+          <div class="result-eyebrow" id="result-eyebrow">당신의 수호신은</div>
+          <div class="result-name" id="result-name"></div>
+        </div>
+      </div>
+      <div class="result-body">
+        <p class="result-tagline" id="result-tagline"></p>
+        <p class="result-desc" id="result-desc"></p>
+
+        <h3 class="protect-title">🛡️ 이렇게 당신을 지켜주고 있어요</h3>
+        <div class="protect-list" id="protect-list"></div>
+
+        <div class="movie-line-box">
+          <div class="movie-line-label">영화 속 한 장면</div>
+          <div class="movie-line-text" id="movie-line-text"></div>
+        </div>
+
+        <h3 class="protect-title">🤝 다른 수호신과의 케미</h3>
+        <div class="chemistry-row" id="chemistry-row"></div>
+
+        <div class="result-actions">
+          <button class="btn-share" id="btn-share">📋 결과 공유하기</button>
+          <button class="btn-cta-movie" id="btn-movie-cta">🎬 영화 정보 더 보기</button>
+          <button class="btn-retry" id="btn-retry">다시 테스트하기</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="entry-section">
+      <div class="entry-form" id="entry-form">
+        <h3 class="entry-title">🎟️ 시사회 응모 이벤트</h3>
+        <p class="entry-sub">수호신 테스트에 참여해주신 분들 중 추첨을 통해 시사회 초대권을 드려요.</p>
+        <div class="entry-field">
+          <label for="entry-name">이름</label>
+          <input type="text" id="entry-name" placeholder="이름을 입력해주세요">
+        </div>
+        <div class="entry-field">
+          <label for="entry-phone">연락처</label>
+          <input type="tel" id="entry-phone" placeholder="010-0000-0000">
+        </div>
+        <label class="entry-consent">
+          <input type="checkbox" id="entry-consent">
+          <span>응모 및 추첨 결과 안내를 위한 개인정보 수집·이용에 동의합니다.</span>
+        </label>
+        <button class="btn-entry-submit" id="btn-entry-submit">응모 완료하기</button>
+      </div>
+      <div class="entry-success" id="entry-success">
+        <div class="es-icon">✅</div>
+        <div class="es-text">응모가 완료됐어요!<br>추첨 결과는 영화 공식 채널을 통해 안내드릴게요.</div>
+      </div>
+    </div>
+
+    <p class="footer-note">© 모모와 다락방의 수상한 요괴들 마케팅 이벤트</p>
+  </section>
+</div>
+
+<div class="share-toast" id="share-toast">링크가 복사됐어요 📋</div>
+
+<script>
+/* =========================================================
+   IMAGES — 실제 호스팅 URL을 여기에 채워넣으세요.
+   비워두면 자동으로 placeholder 박스가 표시됩니다.
+   ========================================================= */
+const IMAGES = {
+  introHero: "images/intro-hero.webp",          // 영화 메인 비주얼 / 키아트 (세로형 추천, 4:5)
+  bookCover: "images/book-cover.webp",          // 다락방 속 오래된 책 표지 이미지
+  chip: {                  // 인트로 미니 칩용 캐릭터 단독 이미지(정방형 크롭 권장)
+    iwa: "images/chip-iwa.webp",
+    kawa: "images/chip-kawa.webp",
+    mame: "images/chip-mame.webp"
+  },
+  resultHero: {            // 결과 페이지 메인(정방형 1:1 권장) 캐릭터 단독 이미지
+    iwa: "images/result-iwa.webp",
+    kawa: "images/result-kawa.webp",
+    mame: "images/result-mame.webp"
+  },
+  stillcuts: {             // 질문 화면에서 쓰일 영화 스틸컷 (16:10 권장)
+    bridgeDive: "images/still-bridge-dive.webp",        // 다리에서 뛰어내리는 장면
+    leafRain: "images/still-leaf-rain.webp",          // 비 오는 날 잎사귀 아래 숨은 장면
+    atticPlay: "images/still-attic-play.webp",         // 다락방에서 셋이 장난치는 장면
+    ferry: "images/still-ferry.webp"              // 페리(배) 위 장면
+  }
+};
+
+/* =========================================================
+   QUESTIONS
+   각 옵션은 { text, score:{iwa,kawa,mame} } 형태.
+   stillcut: 해당 질문에 쓸 스틸컷 키 (IMAGES.stillcuts), 없으면 null
+   ========================================================= */
+const QUESTIONS = [
+  {
+    id: 1,
+    stillcut: null,
+    sceneTag: null,
+    text: "이른 아침, 알람이 울렸어요. 당신의 첫 행동은?",
+    options: [
+      { text: "5분만 더... 결국 두세 번은 다시 잔다", score:{ mame:2 } },
+      { text: "바로 일어나 이불부터 정리한다", score:{ iwa:2 } },
+      { text: "투덜대면서도 제 시간에 일어난다", score:{ kawa:2 } }
+    ]
+  },
+  {
+    id: 2,
+    stillcut: "atticPlay",
+    sceneTag: "다락방에서 벌어진 한바탕 소동",
+    text: "갑자기 방이 엉망이 됐어요. 누군가 사고를 친 게 분명한데, 당신은?",
+    options: [
+      { text: "일단 같이 치우면서 자초지종을 캐묻는다", score:{ iwa:2, kawa:1 } },
+      { text: "잔소리는 하지만 결국 제일 먼저 팔을 걷는다", score:{ kawa:2 } },
+      { text: "오히려 웃음이 터져서 같이 더 어지른다", score:{ mame:2 } }
+    ]
+  },
+  {
+    id: 3,
+    stillcut: null,
+    sceneTag: null,
+    text: "친구가 약속 시간에 30분이나 늦었어요. 당신의 반응은?",
+    options: [
+      { text: "괜찮다고 말하지만 속으로는 좀 서운하다", score:{ mame:1, kawa:1 } },
+      { text: "\"늦으면 연락을 해야지!\" 한소리 하고 풀어진다", score:{ kawa:2 } },
+      { text: "별일 없었으면 됐다며 넘긴다", score:{ iwa:2 } }
+    ]
+  },
+  {
+    id: 4,
+    stillcut: "leafRain",
+    sceneTag: "갑작스런 비, 잎사귀 아래로 피신",
+    text: "갑자기 비가 쏟아져요. 우산이 없는 상황, 당신의 선택은?",
+    options: [
+      { text: "건물 처마 밑에서 묵묵히 비가 그치길 기다린다", score:{ iwa:2 } },
+      { text: "에라 모르겠다, 그냥 신나게 비를 맞으며 뛴다", score:{ mame:2 } },
+      { text: "투덜대며 가까운 편의점으로 뛰어들어가 우산을 산다", score:{ kawa:2 } }
+    ]
+  },
+  {
+    id: 5,
+    stillcut: null,
+    sceneTag: null,
+    text: "맛있는 간식이 딱 하나 남았어요. 같이 있는 사람에게 당신은?",
+    options: [
+      { text: "\"네가 먹어\" 하면서 양보한다", score:{ iwa:1, mame:1 } },
+      { text: "반으로 나눠서 같이 먹자고 한다", score:{ kawa:2 } },
+      { text: "눈치 보다가 결국 내가 먼저 집어버린다", score:{ mame:2 } }
+    ]
+  },
+  {
+    id: 6,
+    stillcut: "bridgeDive",
+    sceneTag: "다리 위, 예상 못한 다이빙 사건",
+    text: "친구가 다리 위에서 갑자기 물로 뛰어내리겠다고 장난을 쳐요. 당신은?",
+    options: [
+      { text: "놀라서 말리려고 손부터 뻗는다", score:{ iwa:2 } },
+      { text: "위험하다고 잔소리부터 쏟아낸다", score:{ kawa:2 } },
+      { text: "재밌겠다며 같이 뛰어들 기세로 다가간다", score:{ mame:2 } }
+    ]
+  },
+  {
+    id: 7,
+    stillcut: null,
+    sceneTag: null,
+    text: "실수로 중요한 약속을 깜빡했어요. 깨달은 순간 당신은?",
+    options: [
+      { text: "바로 솔직하게 사과하고 다음 약속을 다시 잡는다", score:{ iwa:2 } },
+      { text: "스스로에게 잔소리하며 자책한다", score:{ kawa:1, mame:1 } },
+      { text: "일단 어떻게든 둘러댈 방법을 생각한다", score:{ mame:2 } }
+    ]
+  },
+  {
+    id: 8,
+    stillcut: "ferry",
+    sceneTag: "섬으로 향하는 배 위에서",
+    text: "낯선 곳으로 떠나는 배 위, 창밖을 보는 당신의 마음은?",
+    options: [
+      { text: "조금 불안하지만 묵묵히 적응할 준비를 한다", score:{ iwa:2 } },
+      { text: "걱정과 기대가 뒤섞여 계속 투덜거리게 된다", score:{ kawa:2 } },
+      { text: "새로운 모험이 시작된다는 생각에 들뜬다", score:{ mame:2 } }
+    ]
+  }
+];
+
+/* =========================================================
+   RESULT CONTENT
+   ========================================================= */
+const RESULTS = {
+  iwa: {
+    key: "iwa",
+    name: "이와",
+    tagline: "겉은 든든한 거인, 속은 누구보다 다정한 보디가드",
+    desc: "이와는 말이 많지 않아요. 대신 위험한 순간엔 가장 먼저 몸을 던지고, 누군가 흔들릴 때 묵묵히 자리를 지켜주는 타입이죠. 무뚝뚝해 보여도 당신이 힘들 때 가장 먼저 알아채는 건 늘 이와였을 거예요.",
+    protect: [
+      { icon:"🛡️", text:"당신이 위험한 길로 들어서기 전에 한 발 앞서 막아서요." },
+      { icon:"🤫", text:"말 없이 곁을 지키다가, 정말 필요한 순간에만 손을 내밀어요." },
+      { icon:"💪", text:"무거운 짐도, 무거운 고민도 같이 들어주려고 해요." }
+    ],
+    movieLine: "\"걱정 마. 내가 있는 한, 아무 일도 일어나지 않아.\" — 이와는 늘 그렇게 말하는 듯한 표정을 짓고 있어요.",
+    bgGradient: "linear-gradient(160deg, #5E8C89, #3F6663)",
+    accentColor: "var(--iwa-deep)",
+    chip: {
+      kawa: "투덜대는 카와와는 은근 환상의 짝꿍, 둘이 있으면 든든함 두 배",
+      mame: "사고뭉치 마메를 가장 자주 뒤에서 수습해주는 사이"
+    }
+  },
+  kawa: {
+    key: "kawa",
+    name: "카와",
+    tagline: "잔소리는 많아도, 결국 다 챙겨주는 츤데레 수호신",
+    desc: "카와는 늘 한마디씩 보태요. \"그렇게 하면 안 되지\", \"왜 그랬어\" — 그런데 정작 일이 터지면 누구보다 빠르게 나서서 해결해주는 사람이죠. 투덜거림은 사실 걱정의 다른 말이라는 걸, 당신은 이미 알고 있을지도 몰라요.",
+    protect: [
+      { icon:"📢", text:"잔소리로 위험한 순간을 미리 경고해줘요." },
+      { icon:"🧹", text:"불평하면서도 결국 가장 먼저 나서서 뒷정리를 해요." },
+      { icon:"❤️", text:"무심한 척하지만, 사실 당신의 작은 변화도 다 눈치채고 있어요." }
+    ],
+    movieLine: "\"누가 너 챙기는 줄 알아? 됐고, 빨리 따라와.\" — 카와식 다정함은 늘 이런 식으로 도착해요.",
+    bgGradient: "linear-gradient(160deg, #97A23E, #6E7A26)",
+    accentColor: "var(--kawa-deep)",
+    chip: {
+      iwa: "묵직한 이와 옆에서 분위기를 살리는 보이스 담당",
+      mame: "마메의 사고를 가장 많이 수습해주는, 닮은 듯 다른 케미"
+    }
+  },
+  mame: {
+    key: "mame",
+    name: "마메",
+    tagline: "사고는 치지만, 누구보다 순수하게 응원해주는 마음",
+    desc: "마메는 매번 일을 키워요. 그런데 이상하게 밉지 않죠. 겁도 많고 허당이지만, 누군가가 힘들어할 때 가장 먼저 다가가 손을 잡아주는 것도 마메예요. 완벽하진 않아도, 진심만큼은 의심할 수 없는 그런 수호신이에요.",
+    protect: [
+      { icon:"🎈", text:"무거운 상황에서도 분위기를 가볍게 풀어줘요." },
+      { icon:"🙈", text:"실수투성이지만, 그만큼 더 열심히 당신 곁을 지키려 해요." },
+      { icon:"✨", text:"당신이 포기하고 싶을 때, 가장 순수하게 \"할 수 있어!\"를 외쳐줘요." }
+    ],
+    movieLine: "\"나도 무서운데... 그래도 같이 있을게!\" — 마메는 늘 떨면서도 끝까지 곁에 남아요.",
+    bgGradient: "linear-gradient(160deg, #C9786A, #A85547)",
+    accentColor: "var(--mame-deep)",
+    chip: {
+      iwa: "이와가 가장 자주 뒷수습해주는, 든든한 보호 대상 1순위",
+      kawa: "카와의 잔소리를 가장 많이 듣지만 결국 가장 잘 따르는 사이"
+    }
+  }
+};
+
+/* =========================================================
+   STATE
+   ========================================================= */
+let currentQuestionIndex = 0;
+let answeredHistory = [];           // [{questionIndex, optionIndex, score}]
+let scoreTotal = { iwa:0, kawa:0, mame:0 };
+let finalResultKey = null;
+let bookSeqTimer = null;
+
+/* =========================================================
+   IMAGE INJECTION — placeholder fallback 포함
+   ========================================================= */
+function setImage(imgEl, phEl, url){
+  if(url && url.trim() !== ""){
+    imgEl.src = url;
+    imgEl.style.display = "block";
+    if(phEl) phEl.style.display = "none";
+  } else {
+    imgEl.style.display = "none";
+    if(phEl) phEl.style.display = "flex";
+  }
+}
+
+function initImages(){
+  setImage(document.getElementById('img-intro-hero'), document.getElementById('ph-intro-hero'), IMAGES.introHero);
+  setImage(document.getElementById('img-book-cover'), document.getElementById('ph-book-cover'), IMAGES.bookCover);
+
+  setChipImage('iwa'); setChipImage('kawa'); setChipImage('mame');
+
+  if(IMAGES.introHero) document.getElementById('ogImage').setAttribute('content', IMAGES.introHero);
+}
+function setChipImage(key){
+  const img = document.getElementById('img-chip-'+key);
+  const url = IMAGES.chip[key];
+  if(url && url.trim() !== ""){
+    img.src = url; img.style.display = "block";
+    const ph = img.parentElement.querySelector('.chip-ph');
+    if(ph) ph.style.display = "none";
+  }
+}
+
+/* =========================================================
+   SCREEN NAV
+   ========================================================= */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>{
+    s.classList.remove('active','screen-enter');
+  });
+  const target = document.getElementById(id);
+  target.classList.add('active');
+  requestAnimationFrame(()=> target.classList.add('screen-enter'));
+  window.scrollTo(0,0);
+}
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+document.getElementById('btn-start').addEventListener('click', ()=>{
+  currentQuestionIndex = 0;
+  answeredHistory = [];
+  scoreTotal = { iwa:0, kawa:0, mame:0 };
+  renderQuestion();
+  showScreen('screen-quiz');
+});
+
+/* 참여자 수: 그럴듯한 베이스값 + 약간의 랜덤 가산 (실데이터 연동 전 임시) */
+(function initCounter(){
+  const base = 12847;
+  const extra = Math.floor(Math.random()*40);
+  document.getElementById('participant-count').textContent = (base+extra).toLocaleString();
+})();
+
+/* =========================================================
+   QUIZ RENDER
+   ========================================================= */
+function renderQuestion(){
+  const q = QUESTIONS[currentQuestionIndex];
+
+  // progress
+  const pct = Math.round((currentQuestionIndex / QUESTIONS.length) * 100);
+  document.getElementById('progress-fill').style.width = pct + "%";
+  document.getElementById('progress-label').textContent = (currentQuestionIndex+1) + " / " + QUESTIONS.length;
+
+  // stillcut
+  const stillWrap = document.getElementById('quiz-stillcut-wrap');
+  if(q.stillcut){
+    stillWrap.style.display = "block";
+    const url = IMAGES.stillcuts[q.stillcut];
+    setImage(document.getElementById('quiz-stillcut-img'), document.getElementById('quiz-stillcut-ph'), url);
+    document.getElementById('quiz-stillcut-ph').textContent = url ? "" : "영화 스틸컷 (" + q.stillcut + ")";
+    document.getElementById('quiz-scene-tag').textContent = q.sceneTag || "";
+  } else {
+    stillWrap.style.display = "none";
+  }
+
+  // question + options
+  document.getElementById('quiz-question-text').textContent = q.text;
+  const optWrap = document.getElementById('quiz-options');
+  optWrap.innerHTML = "";
+  const marks = ["A","B","C","D"];
+  q.options.forEach((opt, idx)=>{
+    const btn = document.createElement('button');
+    btn.className = "quiz-option";
+    btn.innerHTML = '<span class="opt-mark">'+marks[idx]+'</span><span>'+opt.text+'</span>';
+    btn.addEventListener('click', ()=> selectOption(idx));
+    optWrap.appendChild(btn);
+  });
+
+  document.getElementById('btn-quiz-back').style.display = currentQuestionIndex > 0 ? "block" : "none";
+}
+
+function selectOption(optionIndex){
+  const q = QUESTIONS[currentQuestionIndex];
+  const opt = q.options[optionIndex];
+
+  answeredHistory.push({ questionIndex: currentQuestionIndex, optionIndex });
+  Object.keys(opt.score).forEach(k=>{ scoreTotal[k] += opt.score[k]; });
+
+  if(currentQuestionIndex < QUESTIONS.length - 1){
+    currentQuestionIndex++;
+    renderQuestion();
+    // re-trigger enter animation on question change
+    const screen = document.getElementById('screen-quiz');
+    screen.classList.remove('screen-enter');
+    requestAnimationFrame(()=> screen.classList.add('screen-enter'));
+  } else {
+    finalizeResult();
+  }
+}
+
+document.getElementById('btn-quiz-back').addEventListener('click', ()=>{
+  if(currentQuestionIndex === 0) return;
+  const last = answeredHistory.pop();
+  if(last){
+    const q = QUESTIONS[last.questionIndex];
+    const opt = q.options[last.optionIndex];
+    Object.keys(opt.score).forEach(k=>{ scoreTotal[k] -= opt.score[k]; });
+  }
+  currentQuestionIndex--;
+  renderQuestion();
+});
+
+/* =========================================================
+   RESULT CALCULATION
+   동점 처리: 동점일 경우 마지막 답변에서 더 높은 점수를 준 캐릭터 우선,
+   그래도 동률이면 고정 우선순위(이와>카와>마메)로 결정해 항상 결과가 나오게 함.
+   ========================================================= */
+function calcResultKey(){
+  const entries = Object.entries(scoreTotal); // [['iwa',n],['kawa',n],['mame',n]]
+  let max = Math.max(...entries.map(e=>e[1]));
+  let tied = entries.filter(e=> e[1] === max).map(e=>e[0]);
+
+  if(tied.length === 1) return tied[0];
+
+  // tie-break 1: 마지막 답변의 score 가중치를 다시 참고
+  const lastAnswer = answeredHistory[answeredHistory.length-1];
+  if(lastAnswer){
+    const lastOpt = QUESTIONS[lastAnswer.questionIndex].options[lastAnswer.optionIndex];
+    const fromLast = tied.filter(k => lastOpt.score[k]);
+    if(fromLast.length === 1) return fromLast[0];
+  }
+  // tie-break 2: 고정 우선순위
+  const priority = ["iwa","kawa","mame"];
+  return priority.find(p => tied.includes(p));
+}
+
+function finalizeResult(){
+  finalResultKey = calcResultKey();
+  showScreen('screen-book');
+  startBookSequence();
+}
+
+/* =========================================================
+   BOOK UNLOCK SEQUENCE
+   ========================================================= */
+function startBookSequence(){
+  const leadEl = document.getElementById('book-lead-text');
+  const glow = document.getElementById('book-glow');
+  const cover = document.getElementById('book-cover');
+  const pages = document.getElementById('book-pages');
+  const hint = document.getElementById('book-hint');
+
+  // reset state (재시도 대비)
+  cover.classList.remove('opened');
+  pages.classList.remove('show');
+  glow.classList.remove('show');
+  hint.classList.remove('hide');
+  hint.style.display = 'inline-flex';
+
+  leadEl.innerHTML = '다락방 속 오래된 책이 천천히 깨어나고 있어요<span class="blink">...</span>';
+
+  if(bookSeqTimer) clearTimeout(bookSeqTimer);
+  bookSeqTimer = setTimeout(()=>{
+    leadEl.textContent = "당신의 답변으로 책의 페이지가 정해졌어요";
+    glow.classList.add('show');
+    hint.style.display = 'inline-flex';
+  }, 1400);
+
+  cover.onclick = openBook;
+  hint.onclick = openBook;
+}
+
+function openBook(){
+  const cover = document.getElementById('book-cover');
+  const pages = document.getElementById('book-pages');
+  const hint = document.getElementById('book-hint');
+  const leadEl = document.getElementById('book-lead-text');
+
+  cover.onclick = null;
+  hint.onclick = null;
+  hint.classList.add('hide');
+  leadEl.textContent = "봉인이 풀리고 있어요...";
+
+  // reveal image 세팅
+  const r = RESULTS[finalResultKey];
+  setImage(document.getElementById('img-result-reveal'), document.getElementById('ph-result-reveal'), IMAGES.resultHero[r.key]);
+  document.getElementById('ph-result-reveal').textContent = IMAGES.resultHero[r.key] ? "" : (r.name + " 등장 (resultHero."+r.key+")");
+
+  cover.classList.add('opened');
+  pages.classList.add('show');
+
+  setTimeout(()=>{
+    leadEl.textContent = "당신의 수호신, " + r.name + "이(가) 모습을 드러냈어요!";
+  }, 700);
+
+  setTimeout(()=>{
+    renderResult();
+    showScreen('screen-result');
+  }, 2000);
+}
+
+/* =========================================================
+   RESULT RENDER
+   ========================================================= */
+function renderResult(){
+  const r = RESULTS[finalResultKey];
+
+  document.getElementById('result-name').textContent = r.name;
+  document.getElementById('result-tagline').textContent = r.tagline;
+  document.getElementById('result-desc').textContent = r.desc;
+  document.getElementById('movie-line-text').textContent = r.movieLine;
+
+  setImage(document.getElementById('img-result-hero'), document.getElementById('ph-result-hero'), IMAGES.resultHero[r.key]);
+  document.getElementById('ph-result-hero').textContent = IMAGES.resultHero[r.key] ? "" : (r.name + " 이미지 (resultHero."+r.key+")");
+  document.getElementById('result-hero').style.background = r.bgGradient;
+
+  // protect list
+  const pl = document.getElementById('protect-list');
+  pl.innerHTML = "";
+  r.protect.forEach(p=>{
+    const div = document.createElement('div');
+    div.className = "protect-item";
+    div.innerHTML = '<span class="pi-icon">'+p.icon+'</span><span>'+p.text+'</span>';
+    pl.appendChild(div);
+  });
+
+  // chemistry
+  const otherKeys = Object.keys(RESULTS).filter(k=>k!==r.key);
+  const chemRow = document.getElementById('chemistry-row');
+  chemRow.innerHTML = "";
+  otherKeys.forEach(k=>{
+    const other = RESULTS[k];
+    const div = document.createElement('div');
+    div.className = "chem-chip";
+    div.style.background = (k==="iwa" ? "var(--iwa-soft)" : k==="kawa" ? "var(--kawa-soft)" : "var(--mame-soft)");
+    div.innerHTML = '<b>'+other.name+'</b>'+ (r.chip[k] || "");
+    chemRow.appendChild(div);
+  });
+
+  // accent color on tagline
+  document.getElementById('result-tagline').style.color = r.accentColor;
+
+  // reset entry form view
+  document.getElementById('entry-form').classList.remove('hide');
+  document.getElementById('entry-success').classList.remove('show');
+  document.getElementById('entry-name').value = "";
+  document.getElementById('entry-phone').value = "";
+  document.getElementById('entry-consent').checked = false;
+}
+
+/* =========================================================
+   ACTIONS: share / retry / movie cta / entry submit
+   ========================================================= */
+document.getElementById('btn-share').addEventListener('click', async ()=>{
+  const r = RESULTS[finalResultKey];
+  const shareData = {
+    title: "나의 수호신은 " + r.name + "!",
+    text: r.tagline + " - 모모와 다락방의 수상한 요괴들 수호신 테스트",
+    url: window.location.href
+  };
+  try{
+    if(navigator.share){
+      await navigator.share(shareData);
+      return;
+    }
+  }catch(e){ /* fall through to clipboard */ }
+
+  try{
+    await navigator.clipboard.writeText(shareData.text + " " + shareData.url);
+    showToast("링크가 복사됐어요 📋");
+  }catch(e){
+    showToast("공유 링크: " + shareData.url);
+  }
+});
+
+document.getElementById('btn-retry').addEventListener('click', ()=>{
+  showScreen('screen-intro');
+});
+
+document.getElementById('btn-movie-cta').addEventListener('click', ()=>{
+  // 실제 운영 시 예매/공식 페이지 URL로 교체
+  showToast("영화 공식 페이지 링크를 연결해주세요");
+});
+
+document.getElementById('btn-entry-submit').addEventListener('click', ()=>{
+  const name = document.getElementById('entry-name').value.trim();
+  const phone = document.getElementById('entry-phone').value.trim();
+  const consent = document.getElementById('entry-consent').checked;
+
+  if(!name){ showToast("이름을 입력해주세요"); return; }
+  if(!phone){ showToast("연락처를 입력해주세요"); return; }
+  if(!consent){ showToast("개인정보 수집 동의가 필요해요"); return; }
+
+  // 실제 운영 시: 이 지점에서 서버/스프레드시트 등으로 데이터 전송
+  document.getElementById('entry-form').classList.add('hide');
+  document.getElementById('entry-success').classList.add('show');
+});
+
+function showToast(msg){
+  const toast = document.getElementById('share-toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(()=> toast.classList.remove('show'), 2200);
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+initImages();
+</script>
+</body>
+</html>
